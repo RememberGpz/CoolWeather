@@ -3,6 +3,8 @@ package com.example.guopeizhen.coolweather.util;
 import com.example.guopeizhen.coolweather.db.City;
 import com.example.guopeizhen.coolweather.db.County;
 import com.example.guopeizhen.coolweather.db.Province;
+import com.example.guopeizhen.coolweather.gson.Weather;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,6 +82,20 @@ public class Utility {
             e.printStackTrace();
         }
         return false;
+    }
+
+    //将返回的jason数据解析成weather类对象
+    public static Weather handleWeatherJson(String response){
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weatherContent= jsonArray.getJSONObject(0).toString();
+            return  new Gson().fromJson(weatherContent,Weather.class);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
