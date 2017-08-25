@@ -1,4 +1,4 @@
-package com.example.guopeizhen.coolweather.activity;
+package com.example.guopeizhen.coolweather.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
