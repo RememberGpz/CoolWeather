@@ -44,14 +44,11 @@ public class WeatherActivity extends AppCompatActivity {
         String weatherId = getIntent().getStringExtra("weather_id");
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = preferences.getString("weather",null);
-        if (weatherString!=null) {
-            Weather weather = Utility.handleWeatherJson(weatherString);
-            showWeatherInfo(weather);
-        }else {
 
 
+            weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(weatherId);
-        }
+
     }
 
     private void init(){
@@ -69,8 +66,8 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void requestWeather(final String weatherId){
-        String url = "http://guolin.tech/api/weather?cityid="+weatherId+
-                "&key=7d69594b0c7e4b1db52d2254a7d8318f";
+        String url = "http://guolin.tech/api/weather?cityid="+"CN101190407"+
+                "&key=8291eeccb8404a2795b2f68a21dd5be5";
         HttpUtil.sendHttpRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -97,7 +94,7 @@ public class WeatherActivity extends AppCompatActivity {
                             editor.apply();
                             showWeatherInfo(weather);
                         }else {
-                            Log.d("WeatherActivity",weather.status);
+//                            Log.d("WeatherActivity",weather.status);
                             ToastUtil.showToast("加载天气信息失败！");
                         }
                     }
