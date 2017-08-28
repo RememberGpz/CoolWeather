@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.guopeizhen.coolweather.R;
 import com.example.guopeizhen.coolweather.gson.Forecast;
@@ -44,11 +45,8 @@ public class WeatherActivity extends AppCompatActivity {
         String weatherId = getIntent().getStringExtra("weather_id");
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = preferences.getString("weather",null);
-
-
-            weatherLayout.setVisibility(View.INVISIBLE);
-            requestWeather(weatherId);
-
+        weatherLayout.setVisibility(View.INVISIBLE);
+        requestWeather(weatherId);
     }
 
     private void init(){
@@ -66,7 +64,7 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void requestWeather(final String weatherId){
-        String url = "http://guolin.tech/api/weather?cityid="+"CN101190407"+
+        String url = "http://guolin.tech/api/weather?cityid="+weatherId+
                 "&key=8291eeccb8404a2795b2f68a21dd5be5";
         HttpUtil.sendHttpRequest(url, new Callback() {
             @Override
@@ -122,13 +120,24 @@ public class WeatherActivity extends AppCompatActivity {
             forecastLayout.addView(view);
         }
         if (weather.aqi!=null){
-            aqiText.setText(weather.aqi.aqiCity.aqi);
-            pm25Text.setText(weather.aqi.aqiCity.pm25);
+//            aqiText.setText(weather.aqi.aqiCity.aqi);
+//            pm25Text.setText(weather.aqi.aqiCity.pm25);
         }
 
         comfortText.setText("舒适度:" + weather.suggestion.comfort.info);
         carWashText.setText("洗车指数:" + weather.suggestion.carWash.info);
         sportText.setText("运动建议:"+ weather.suggestion.sport.info);
         weatherLayout.setVisibility(View.VISIBLE);
+    }
+    long currentTime = 0;
+    @Override
+    public void onBackPressed() {
+
+        if (System.currentTimeMillis()-currentTime<2000){
+            finish();
+        }else {
+            currentTime = System.currentTimeMillis();
+            ToastUtil.showToast("再按一次退出应用=v=");
+        }
     }
 }

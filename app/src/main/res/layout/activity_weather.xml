@@ -3,10 +3,12 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     xmlns:android="http://schemas.android.com/apk/res/android">
+    <include layout="@layout/title"/>
     <ScrollView
         android:id="@+id/sv_weatherlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         android:scrollbars="none"
         android:overScrollMode="never"
         >
@@ -14,7 +16,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <include layout="@layout/title"/>
+
             <include layout="@layout/now"/>
             <include layout="@layout/forecast"/>
             <include layout="@layout/aqi"/>
