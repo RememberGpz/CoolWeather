@@ -8,25 +8,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
-
-    <ScrollView
-        android:id="@+id/sv_weatherlayout"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:overScrollMode="never"
-        >
-        <LinearLayout
-            android:orientation="vertical"
-            android:fitsSystemWindows="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <include layout="@layout/title"/>
-            <include layout="@layout/now"/>
-            <include layout="@layout/forecast"/>
-            <include layout="@layout/aqi"/>
-            <include layout="@layout/suggestion"/>
-        </LinearLayout>
+        android:layout_height="match_parent">
 
-    </ScrollView>
+        <ScrollView
+            android:id="@+id/sv_weatherlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:overScrollMode="never"
+            >
+            <LinearLayout
+                android:orientation="vertical"
+                android:fitsSystemWindows="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <include layout="@layout/title"/>
+                <include layout="@layout/now"/>
+                <include layout="@layout/forecast"/>
+                <include layout="@layout/aqi"/>
+                <include layout="@layout/suggestion"/>
+            </LinearLayout>
+
+        </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

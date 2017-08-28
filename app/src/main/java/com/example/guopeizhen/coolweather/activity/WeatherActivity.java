@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,6 +43,7 @@ public class WeatherActivity extends AppCompatActivity {
                     comfortText,carWashText,sportText;
     private ImageView ivBg;   //主界面的背景图
     private LinearLayout forecastLayout;
+    private SwipeRefreshLayout srl;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,11 +57,19 @@ public class WeatherActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_weather);
         init();
-        String weatherId = getIntent().getStringExtra("weather_id");
+
+        final String weatherId = getIntent().getStringExtra("weather_id");
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = preferences.getString("weather",null);
         weatherLayout.setVisibility(View.INVISIBLE);
         requestWeather(weatherId);
+        srl.setColorSchemeResources(R.color.colorPrimary);
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                requestWeather(weatherId);
+            }
+        });
     }
 
     private void init(){
@@ -74,6 +84,7 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText = (TextView)findViewById(R.id.tv_carwash);
         sportText = (TextView)findViewById(R.id.tv_sporttext);
         forecastLayout = (LinearLayout)findViewById(R.id.forecast_layout);
+        srl = (SwipeRefreshLayout)findViewById(R.id.srl) ;
         ivBg = (ImageView)findViewById(R.id.iv_bg);
     }
 
@@ -88,6 +99,7 @@ public class WeatherActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         ToastUtil.showToast("天气信息加载失败！");
+                        srl.setRefreshing(false);
                     }
                 });
             }
@@ -110,6 +122,7 @@ public class WeatherActivity extends AppCompatActivity {
 //                            Log.d("WeatherActivity",weather.status);
                             ToastUtil.showToast("加载天气信息失败！");
                         }
+                        srl.setRefreshing(false);
                     }
                 });
             }
