@@ -1,6 +1,9 @@
 package com.example.guopeizhen.coolweather.activity;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -8,11 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.guopeizhen.coolweather.R;
 import com.example.guopeizhen.coolweather.gson.Forecast;
 import com.example.guopeizhen.coolweather.gson.Weather;
@@ -35,11 +40,19 @@ public class WeatherActivity extends AppCompatActivity {
     private ScrollView weatherLayout;
     private TextView titleCity,titleUpdateTime,degreeText,weatherInfoText,aqiText,pm25Text,
                     comfortText,carWashText,sportText;
+    private ImageView ivBg;   //主界面的背景图
     private LinearLayout forecastLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT>=21){                     //把任务栏也一起设置图片。只在Android5.0系统以上才支持
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            );
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
         setContentView(R.layout.activity_weather);
         init();
         String weatherId = getIntent().getStringExtra("weather_id");
@@ -61,11 +74,13 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText = (TextView)findViewById(R.id.tv_carwash);
         sportText = (TextView)findViewById(R.id.tv_sporttext);
         forecastLayout = (LinearLayout)findViewById(R.id.forecast_layout);
+        ivBg = (ImageView)findViewById(R.id.iv_bg);
     }
 
     private void requestWeather(final String weatherId){
         String url = "http://guolin.tech/api/weather?cityid="+weatherId+
                 "&key=8291eeccb8404a2795b2f68a21dd5be5";
+        String picUrl = "http://guolin.tech/api/bing_pic";
         HttpUtil.sendHttpRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -95,6 +110,37 @@ public class WeatherActivity extends AppCompatActivity {
 //                            Log.d("WeatherActivity",weather.status);
                             ToastUtil.showToast("加载天气信息失败！");
                         }
+                    }
+                });
+            }
+        });
+//        String pic=PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).getString("pic","");
+//        if (!pic.equals("")){
+//            Glide.with(WeatherActivity.this).load(pic).into(ivBg);
+//        }else {
+            loadingBingPic(picUrl);
+//        }
+    }
+
+    private void loadingBingPic(final String picUrl){
+        HttpUtil.sendHttpRequest(picUrl, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                ToastUtil.showToast("加载背景图片失败");
+                Log.e("WeatherActivity",e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String pic = response.body().string();
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("pic",pic);
+                editor.apply();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.with(WeatherActivity.this).load(pic).into(ivBg);
                     }
                 });
             }
