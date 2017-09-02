@@ -183,7 +183,6 @@ public class ChooseAreaFragment extends Fragment {
                                 queryProvince();
                             }
                         });
-
                     }
                 }else if(type == CITY){
                     if (Utility.handleCityJson(response.body().string(),selectedProvince.getProvinceCode())){
